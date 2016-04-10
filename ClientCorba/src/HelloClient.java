@@ -31,7 +31,7 @@ public class HelloClient
         NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
  
         // resolve the Object Reference in Naming
-        String name = "Hello";
+        String name = "CORBA_Project";
         helloImpl = CORBA_InterfaceHelper.narrow(ncRef.resolve_str(name));
 
         System.out.println("Obtained a handle on server object: " + helloImpl);

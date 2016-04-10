@@ -229,7 +229,7 @@ class HelloImpl extends CORBA_InterfacePOA {
     }
 
     public void giveMeYourBD() {
-        ResultSet rs = null;
+        /*ResultSet rs = null;
 
         ConnectBD cbd = new ConnectBD();
         try {
@@ -261,11 +261,15 @@ class HelloImpl extends CORBA_InterfacePOA {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(ServerRMI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 }
 
 public class HelloServer {
+    
+    public void startServer(){
+        
+    }
 
     public static void main(String args[]) {
         try {
@@ -293,7 +297,7 @@ public class HelloServer {
             NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 
             // bind the Object Reference in Naming
-            String name = "Hello";
+            String name = "CORBA_Project";
             NameComponent path[] = ncRef.to_name(name);
             ncRef.rebind(path, href);
 
