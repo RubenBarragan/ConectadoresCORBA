@@ -1,0 +1,13 @@
+module commun
+{
+  interface CORBA_Interface
+  {
+    string sayHello();
+    string selectAll();
+    string insertRow(in string ibt, in string name, in string lugar, in string datetime);
+    string updateRow(in string ibt, in string lugar, in string datetime);
+    boolean isEmpty();
+    void recoveryBD(in string ibt, in string name, in string lugar, in string datetime);
+    void giveMeYourBD();
+  };
+};

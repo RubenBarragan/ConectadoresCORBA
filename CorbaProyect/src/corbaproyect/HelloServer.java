@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package HelloServer;
+package corbaproyect;
 
 /**
  *
@@ -13,7 +13,6 @@ package HelloServer;
 // Copyright and License 
 // HelloServer.java
 // Copyright and License 
-//import corbaproyect.ConnectBD;
 import commun.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -268,11 +267,7 @@ class HelloImpl extends CORBA_InterfacePOA {
 
 public class HelloServer {
     
-    public void startServer(){
-        
-    }
-
-    public static void main(String args[]) {
+    public void startServer(String[] args){
         try {
             // create and initialize the ORB
             ORB orb = ORB.init(args, null);
@@ -312,6 +307,5 @@ public class HelloServer {
         }
 
         System.out.println("HelloServer Exiting ...");
-
     }
 }

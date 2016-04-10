@@ -1,3 +1,5 @@
+package corbaproyect;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -17,7 +19,7 @@ public class HelloClient {
 
     static CORBA_Interface helloImpl;
 
-    static public void connectToServer(String[] args) {
+    public void connectToServer(String[] args) {
         try {
             // create and initialize the ORB
             ORB orb = ORB.init(args, null);
@@ -40,9 +42,4 @@ public class HelloClient {
             e.printStackTrace(System.out);
         }
     }
-
-    public static void main(String args[]) {
-        connectToServer(args);
-    }
-
 }
