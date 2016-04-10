@@ -1,0 +1,11 @@
+module commun
+{
+  interface CORBA_Interface
+  {
+  string sayHello();
+  string selectAll();
+  string insertRow();
+  string updateRow();
+  boolean isEmpty();
+  };
+};
