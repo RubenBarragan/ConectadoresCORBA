@@ -31,7 +31,7 @@ public class Server_Socket {
     private DataInputStream fromClient;
     boolean RMIconnected = false;
     boolean sendBD = false;
-    private CORBA_Interface helloImpl;
+    public CORBA_Interface helloImpl;
     ConnectBD cbd;
     Connection conn;
 

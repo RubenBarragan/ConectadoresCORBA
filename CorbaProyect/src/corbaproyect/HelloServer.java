@@ -258,6 +258,7 @@ public CORBA_Interface connectToServer(String[] args) {
         return helloImpl;
     }
     public void giveMeYourBD() {
+        
         ResultSet rs = null;
 
         ConnectBD cbd = new ConnectBD();

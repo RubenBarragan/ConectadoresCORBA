@@ -72,16 +72,16 @@ public class Server_Thread extends Thread {
 
             System.out.println("RMI Connection established...[OK]");
             PreviusClass.helloImpl = helloImpl;
-
+ 
             if (!PreviusClass.sendBD) {
                 Statement stmt2 = PreviusClass.conn.createStatement();
                 ResultSet rs = stmt2.executeQuery("select * from devices");
 
                 while (rs.next()) {
-                    stub.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+                    helloImpl.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
                 }
                 PreviusClass.sendBD = true;
-                stub.giveMeYourBD();
+                helloImpl.giveMeYourBD();
             }
 
         } catch (Exception e) {
