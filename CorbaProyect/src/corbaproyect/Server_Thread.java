@@ -266,8 +266,14 @@ public class Server_Thread extends Thread {
                 }
 
                 if (helloImpl != null) {
-                    helloImpl.updateRow(ibt, msg, datetime, argsw[3]);
-                    System.out.println("External query performed...[OK]");
+                    try {
+                        helloImpl.updateRow(ibt, msg, datetime, argsw[3]);
+                        System.out.println("External query performed...[OK]");
+                    } catch (Exception exx) {
+
+                        PreviusClass.sendBD = false;
+                        connectToServer(args);
+                    }
                 } else {
                     PreviusClass.sendBD = false;
                     connectToServer(this.args);
