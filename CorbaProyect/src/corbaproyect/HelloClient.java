@@ -52,5 +52,7 @@ public class HelloClient extends Thread{
             System.out.println("ERROR : " + e);
             e.printStackTrace(System.out);
         }
+        //Instance to connect with clients.
+        Server_Socket s = new Server_Socket(4050, helloImpl, args);
     }
 }
