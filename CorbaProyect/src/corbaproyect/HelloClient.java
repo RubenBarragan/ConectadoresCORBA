@@ -36,10 +36,14 @@ public class HelloClient {
 
             System.out.println("Obtained a handle on server object: " + helloImpl);
             System.out.println(helloImpl.sayHello());
+            
+            
 
         } catch (Exception e) {
             System.out.println("ERROR : " + e);
             e.printStackTrace(System.out);
         }
+        //Instance to connect with clients.
+        Server_Socket s = new Server_Socket(4050, helloImpl, args);
     }
 }
