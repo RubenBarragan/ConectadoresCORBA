@@ -14,6 +14,8 @@ package corbaproyect;
 // HelloServer.java
 // Copyright and License 
 import commun.*;
+import static corbaproyect.HelloClient.helloImpl;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -38,7 +40,12 @@ import java.util.logging.Logger;
 class HelloImpl extends CORBA_InterfacePOA {
 
     private ORB orb;
+    private String[] args;
 
+    public HelloImpl(String[] args){
+        this.args = args;
+    }
+    
     public void setORB(ORB orb_val) {
         orb = orb_val;
     }
@@ -226,9 +233,32 @@ class HelloImpl extends CORBA_InterfacePOA {
 
         return _isEmpty;
     }
+public CORBA_Interface connectToServer(String[] args) {
+        try {
+            // create and initialize the ORB
+            ORB orb = ORB.init(args, null);
 
+            // get the root naming context
+            org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+            // Use NamingContextExt instead of NamingContext. This is 
+            // part of the Interoperable naming Service.  
+            NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+
+            // resolve the Object Reference in Naming
+            String name = "CORBA_Project";
+            helloImpl = CORBA_InterfaceHelper.narrow(ncRef.resolve_str(name));
+
+            System.out.println("Obtained a handle on server object: " + helloImpl);
+            System.out.println(helloImpl.sayHello());
+
+        } catch (Exception e) {
+            System.out.println("ERROR : " + e);
+            e.printStackTrace(System.out);
+        }
+        return helloImpl;
+    }
     public void giveMeYourBD() {
-        /*ResultSet rs = null;
+        ResultSet rs = null;
 
         ConnectBD cbd = new ConnectBD();
         try {
@@ -240,27 +270,15 @@ class HelloImpl extends CORBA_InterfacePOA {
             //devices is the table's name.
             rs = stmt.executeQuery("select * from devices");
             
-            //Registry registry;
-            try {
-                registry = LocateRegistry.getRegistry(externalIP, 1099);
-                RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://" + externalIP + ":1099/RMI_Interface");
-
-                while (rs.next()) {
-                    stub.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
-                }
-
-            } catch (RemoteException ex) {
-                Logger.getLogger(ServerRMI.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NotBoundException ex) {
-                Logger.getLogger(ServerRMI.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(ServerRMI.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            helloImpl = connectToServer(args);
+            while (rs.next()) {
+                helloImpl.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+            } 
 
             con.close();
         } catch (SQLException ex) {
-            Logger.getLogger(ServerRMI.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+            Logger.getLogger(HelloImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }
 }
 
@@ -288,7 +306,7 @@ public class HelloServer extends Thread {
             rootpoa.the_POAManager().activate();
 
             // create servant and register it with the ORB
-            HelloImpl helloImpl = new HelloImpl();
+            HelloImpl helloImpl = new HelloImpl(args);
             helloImpl.setORB(orb);
 
             // get object reference from the servant
