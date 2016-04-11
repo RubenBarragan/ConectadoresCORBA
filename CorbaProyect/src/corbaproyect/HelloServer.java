@@ -42,10 +42,10 @@ class HelloImpl extends CORBA_InterfacePOA {
     private ORB orb;
     private String[] args;
 
-    public HelloImpl(String[] args){
+    public HelloImpl(String[] args) {
         this.args = args;
     }
-    
+
     public void setORB(ORB orb_val) {
         orb = orb_val;
     }
@@ -133,7 +133,7 @@ class HelloImpl extends CORBA_InterfacePOA {
         return result;
     }
 
-    public String insertRow(String ibt, String name, String lugar, String datetime) {
+    public String insertRow(String ibt, String name, String lugar, String datetime, String pass) {
 
         String returnedQuery = "Cosa";
 
@@ -145,7 +145,7 @@ class HelloImpl extends CORBA_InterfacePOA {
             Statement stmt = con.createStatement();
 
             //devices is the table's name.
-            stmt.executeUpdate("INSERT INTO `locator`.`devices` (`id_bluetooth`, `name`, `lugar`, `datetime`) VALUES ('" + ibt + "', '" + name + "', '" + lugar + "', '" + datetime + "')");
+            stmt.executeUpdate("INSERT INTO `locator`.`devices` (`id_bluetooth`, `name`, `lugar`, `datetime`, `password`) VALUES ('" + ibt + "', '" + name + "', '" + lugar + "', '" + datetime + "','" + pass + "')");
 
             System.out.println("All right");
 
@@ -157,7 +157,7 @@ class HelloImpl extends CORBA_InterfacePOA {
         return returnedQuery;
     }
 
-    public String updateRow(String ibt, String lugar, String datetime) {
+    public String updateRow(String ibt, String lugar, String datetime, String pass) {
 
         String returnedQuery = "";
 
@@ -168,7 +168,7 @@ class HelloImpl extends CORBA_InterfacePOA {
             //stmt is the statement's object. It's used to create statements or queries.
             Statement stmt = con.createStatement();
 
-            stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + lugar + "',`datetime`='" + datetime + "' WHERE id_bluetooth='" + ibt + "'");
+            stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + lugar + "',`datetime`='" + datetime + "',`password`='" + pass + "'  WHERE id_bluetooth='" + ibt + "'");
 
             System.out.println("All right");
 
@@ -180,12 +180,12 @@ class HelloImpl extends CORBA_InterfacePOA {
         return returnedQuery;
     }
 
-    public void recoveryBD(String ibt, String name, String lugar, String datetime) {
+    public void recoveryBD(String ibt, String name, String lugar, String datetime, String pass) {
         int result = exists_idBT(ibt, datetime);
-        if (result== 1) {
-            updateRow(ibt, lugar, datetime);
-        } else if (result == 0){
-            insertRow(ibt, name, lugar, datetime);
+        if (result == 1) {
+            updateRow(ibt, lugar, datetime, pass);
+        } else if (result == 0) {
+            insertRow(ibt, name, lugar, datetime, pass);
         }
     }
 
@@ -233,7 +233,8 @@ class HelloImpl extends CORBA_InterfacePOA {
 
         return _isEmpty;
     }
-public CORBA_Interface connectToServer(String[] args) {
+
+    public CORBA_Interface connectToServer(String[] args) {
         try {
             // create and initialize the ORB
             ORB orb = ORB.init(args, null);
@@ -257,8 +258,9 @@ public CORBA_Interface connectToServer(String[] args) {
         }
         return helloImpl;
     }
+
     public void giveMeYourBD() {
-        
+
         ResultSet rs = null;
 
         ConnectBD cbd = new ConnectBD();
@@ -270,34 +272,34 @@ public CORBA_Interface connectToServer(String[] args) {
 
             //devices is the table's name.
             rs = stmt.executeQuery("select * from devices");
-            
+
             helloImpl = connectToServer(args);
             while (rs.next()) {
-                helloImpl.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
-            } 
+                helloImpl.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
+            }
 
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(HelloImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
 }
 
 public class HelloServer extends Thread {
-    
+
     String[] args = {};
-    
+
     public HelloServer(String[] args) {
         this.args = args;
-        
+
         this.start();
     }
-    
-    public void run(){
+
+    public void run() {
         startServer();
     }
-    
-    public void startServer(){
+
+    public void startServer() {
         try {
             // create and initialize the ORB
             ORB orb = ORB.init(args, null);
@@ -326,7 +328,7 @@ public class HelloServer extends Thread {
             String name = "CORBA_Project";
             NameComponent path[] = ncRef.to_name(name);
             ncRef.rebind(path, href);
-            
+
             //Test DB.
             helloImpl.testBDConnection();
 

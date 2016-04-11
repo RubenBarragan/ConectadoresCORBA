@@ -4,10 +4,10 @@ module commun
   {
     string sayHello();
     string selectAll();
-    string insertRow(in string ibt, in string name, in string lugar, in string datetime);
-    string updateRow(in string ibt, in string lugar, in string datetime);
+    string insertRow(in string ibt, in string name, in string lugar, in string datetime, in string password);
+    string updateRow(in string ibt, in string lugar, in string datetime, in string password);
     boolean isEmpty();
-    void recoveryBD(in string ibt, in string name, in string lugar, in string datetime);
+    void recoveryBD(in string ibt, in string name, in string lugar, in string datetime, in string password);
     void giveMeYourBD();
   };
 };
