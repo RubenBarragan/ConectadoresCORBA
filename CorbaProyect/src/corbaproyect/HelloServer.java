@@ -40,10 +40,11 @@ import java.util.logging.Logger;
 class HelloImpl extends CORBA_InterfacePOA {
 
     private ORB orb;
-    private String[] args;
+    private String[] argsServer, argsClient;
 
-    public HelloImpl(String[] args) {
-        this.args = args;
+    public HelloImpl(String[] argss, String[] argsc) {
+        this.argsServer = argss;
+        this.argsClient = argsc;
     }
 
     public void setORB(ORB orb_val) {
@@ -51,7 +52,7 @@ class HelloImpl extends CORBA_InterfacePOA {
     }
 
     public String sayHello() {
-        return "Hello, a wii!";
+        return "CORBA Server connection established...[OK]";
     }
 
     public String selectAll() {
@@ -270,7 +271,7 @@ class HelloImpl extends CORBA_InterfacePOA {
             //devices is the table's name.
             rs = stmt.executeQuery("select * from devices");
 
-            helloImpl = connectToServer(args);
+            helloImpl = connectToServer(argsClient);
             while (rs.next()) {
                 helloImpl.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
             }
@@ -284,10 +285,12 @@ class HelloImpl extends CORBA_InterfacePOA {
 
 public class HelloServer extends Thread {
 
-    String[] args = {};
+    String[] argsServer = {};
+    String[] argsClient = {};
 
-    public HelloServer(String[] args) {
-        this.args = args;
+    public HelloServer(String[] argsServer, String[] argsClient) {
+        this.argsServer = argsServer;
+        this.argsClient = argsClient;
 
         this.start();
     }
@@ -299,14 +302,14 @@ public class HelloServer extends Thread {
     public void startServer() {
         try {
             // create and initialize the ORB
-            ORB orb = ORB.init(args, null);
+            ORB orb = ORB.init(argsServer, null);
 
             // get reference to rootpoa & activate the POAManager
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();
 
             // create servant and register it with the ORB
-            HelloImpl helloImpl = new HelloImpl(args);
+            HelloImpl helloImpl = new HelloImpl(argsServer, argsClient);
             helloImpl.setORB(orb);
 
             // get object reference from the servant
