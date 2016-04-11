@@ -17,12 +17,12 @@ public class CorbaProyect {
     public static void main(String[] args) {
         
         String[] argsServer = {"-ORBInitialPort","1050"};
-        String[] argsClient = {"-ORBInitialHost","192.168.1.70","-ORBInitialPort","1050"};
+        String[] argsClient = {"-ORBInitialHost","10.0.5.215","-ORBInitialPort","1050"};
         
         //Create an instance of the Server.
-        HelloServer hs = new HelloServer(argsServer);
+        //HelloServer hs = new HelloServer(argsServer);
         
         //Create an instance of the client.
-        //HelloClient hc = new HelloClient(argsClient);
+        HelloClient hc = new HelloClient(argsClient);
     }
 }

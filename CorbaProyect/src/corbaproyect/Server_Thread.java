@@ -253,6 +253,7 @@ public class Server_Thread extends Thread {
                 System.out.println("Message Recived: " + msg);
                 String datetime = "2016-04-01 23:55:20";
                 String ibt = "bt123456789";
+                String pass = "pass";
                 //Create the query to the local database.
                 if (PreviusClass.conn != null) {
                     Statement stmt = PreviusClass.conn.createStatement(); //stmt is the object to create statements.
@@ -267,7 +268,7 @@ public class Server_Thread extends Thread {
 
                 if (helloImpl != null) {
                     try {
-                        helloImpl.updateRow(ibt, msg, datetime, argsw[3]);
+                        helloImpl.updateRow(ibt, msg, datetime, pass);
                         System.out.println("External query performed...[OK]");
                     } catch (Exception exx) {
 
