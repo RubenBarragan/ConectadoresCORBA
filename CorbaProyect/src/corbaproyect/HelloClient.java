@@ -17,6 +17,7 @@ import org.omg.CORBA.*;
 
 public class HelloClient {
 
+    public String[] args = {};
     static CORBA_Interface helloImpl;
 
     public void connectToServer(String[] args) {

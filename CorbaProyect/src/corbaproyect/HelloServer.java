@@ -265,9 +265,21 @@ class HelloImpl extends CORBA_InterfacePOA {
     }
 }
 
-public class HelloServer {
+public class HelloServer extends Thread {
     
-    public void startServer(String[] args){
+    String[] args = {};
+    
+    public HelloServer(String[] args) {
+        this.args = args;
+        
+        this.start();
+    }
+    
+    public void run(){
+        startServer();
+    }
+    
+    public void startServer(){
         try {
             // create and initialize the ORB
             ORB orb = ORB.init(args, null);
@@ -300,7 +312,7 @@ public class HelloServer {
             System.out.println("HelloServer ready and waiting ...");
 
             // wait for invocations from clients
-            //orb.run();
+            orb.run();
         } catch (Exception e) {
             System.err.println("ERROR: " + e);
             e.printStackTrace(System.out);
