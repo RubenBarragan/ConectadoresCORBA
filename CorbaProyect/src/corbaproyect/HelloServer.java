@@ -300,7 +300,7 @@ public class HelloServer {
             System.out.println("HelloServer ready and waiting ...");
 
             // wait for invocations from clients
-            orb.run();
+            //orb.run();
         } catch (Exception e) {
             System.err.println("ERROR: " + e);
             e.printStackTrace(System.out);
