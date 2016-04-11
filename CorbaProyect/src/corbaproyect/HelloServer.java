@@ -249,9 +249,6 @@ class HelloImpl extends CORBA_InterfacePOA {
             String name = "CORBA_Project";
             helloImpl = CORBA_InterfaceHelper.narrow(ncRef.resolve_str(name));
 
-            System.out.println("Obtained a handle on server object: " + helloImpl);
-            System.out.println(helloImpl.sayHello());
-
         } catch (Exception e) {
             System.out.println("ERROR : " + e);
             e.printStackTrace(System.out);
