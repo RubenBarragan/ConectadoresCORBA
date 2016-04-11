@@ -70,8 +70,19 @@ public class Server_Thread extends Thread {
             String name = "CORBA_Project";
             helloImpl = CORBA_InterfaceHelper.narrow(ncRef.resolve_str(name));
 
-            System.out.println("Obtained a handle on server object: " + helloImpl);
-            System.out.println(helloImpl.sayHello());
+            System.out.println("RMI Connection established...[OK]");
+            PreviusClass.helloImpl = helloImpl;
+
+            if (!PreviusClass.sendBD) {
+                Statement stmt2 = PreviusClass.conn.createStatement();
+                ResultSet rs = stmt2.executeQuery("select * from devices");
+
+                while (rs.next()) {
+                    stub.recoveryBD(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+                }
+                PreviusClass.sendBD = true;
+                stub.giveMeYourBD();
+            }
 
         } catch (Exception e) {
             System.out.println("ERROR : " + e);
