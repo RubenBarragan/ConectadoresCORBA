@@ -189,7 +189,7 @@ class HelloImpl extends CORBA_InterfacePOA {
     }
 
     //Only local computing.
-    public static void testBDConnection() {
+    public void testBDConnection() {
         ConnectBD cbd = new ConnectBD();
         Connection con = null;
 
@@ -197,7 +197,6 @@ class HelloImpl extends CORBA_InterfacePOA {
         while (con == null) {
             con = cbd.connectBD();
         }
-
     }
 
     public boolean isEmpty() {
@@ -308,6 +307,9 @@ public class HelloServer extends Thread {
             String name = "CORBA_Project";
             NameComponent path[] = ncRef.to_name(name);
             ncRef.rebind(path, href);
+            
+            //Test DB.
+            helloImpl.testBDConnection();
 
             System.out.println("HelloServer ready and waiting ...");
 
