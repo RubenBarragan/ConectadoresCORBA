@@ -22,9 +22,7 @@ public class CorbaProyect {
         //Create an instance of the Server.
         HelloServer hs = new HelloServer(argsServer);
         
-        
         //Create an instance of the client.
-        HelloClient hc = new HelloClient();
-        hc.connectToServer(argsClient);
+        HelloClient hc = new HelloClient(argsClient);
     }
 }

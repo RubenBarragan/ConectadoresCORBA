@@ -15,12 +15,22 @@ import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
 import org.omg.CORBA.*;
 
-public class HelloClient {
+public class HelloClient extends Thread{
 
     public String[] args = {};
     static CORBA_Interface helloImpl;
+    
+    public HelloClient(String[] args){
+        this.args = args;
+        
+        this.start();
+    }
+    
+    public void run(){
+        connectToServer();
+    }
 
-    public void connectToServer(String[] args) {
+    public void connectToServer() {
         try {
             // create and initialize the ORB
             ORB orb = ORB.init(args, null);
