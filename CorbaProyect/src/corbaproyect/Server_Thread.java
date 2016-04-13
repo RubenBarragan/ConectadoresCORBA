@@ -223,6 +223,11 @@ public class Server_Thread extends Thread {
         //System.out.println(sdf.format(cal.getTime()));
         return sdf.format(cal.getTime());
     }
+    
+    public String searchArea(String area){
+        
+        return "";
+    }
 
     @Override
     public void run() {
@@ -234,33 +239,35 @@ public class Server_Thread extends Thread {
 
             String[] dataSet = msg.split("#"); //ingresar#id_bluetooth#nombre#password
 
-            if (dataSet[0].equals("ingresar")) {
+            if (dataSet[0].equals("ingresar")) { //ingresar#id_bluetooth#nombre#password
                 //Check if the user and password match.
                 if (checkID(dataSet[1], dataSet[2], dataSet[3])) {
                     toClient.writeUTF("ingresa");
                 } else {
                     toClient.writeUTF("noIngresa");
                 }
-            } else if (dataSet[0].equals("registrar")) {
+            } else if (dataSet[0].equals("registrar")) { //registras#id_bluetooth#nombre#password
                 //Check if the person already exists.
                 if (!checkIDexist(dataSet[1], dataSet[2], dataSet[3])) {
                     insertPerson(dataSet[1], dataSet[2], dataSet[3]);
-                    toClient.writeUTF("registrado");
+                    toClient.writeUTF("signUp");
                 } else {
-                    toClient.writeUTF("yaExiste");
+                    toClient.writeUTF("userExists");
                 }
-            } else if (dataSet[0].equals("searchPerson")) {
-                String persona = buscarPersona(dataSet[2]);
+            } else if (dataSet[0].equals("searchPerson")) {  //searchPerson#name
+                String persona = buscarPersona(dataSet[1]);
                 toClient.writeUTF(persona);
-            } else if (dataSet[0].equals("searchAll")) {
+            } else if (dataSet[0].equals("searchAll")) { //searchAll
                 String Todos = buscarTodos();
                 toClient.writeUTF(Todos);
-            } else if (dataSet[0].equals("searchArea")) {
-                //Search by area.
-            } else if (dataSet[0].equals("updateLocation")) {
-                System.out.println("Message Recived: " + msg);
+            } else if (dataSet[0].equals("searchArea")) { //searchArea#location
+                String userInArea = searchArea(dataSet[1]);
+                toClient.writeUTF(userInArea);
+            } else if (dataSet[0].equals("updateLocation")) { //updateLocation#id_bluetooth#location#password
+                //System.out.println("Message Recived: " + msg);
+                String ibt = dataSet[1];
+                String lugar = dataSet[2];
                 String datetime = getDate();
-                String ibt = "bt123456789";
                 String pass = "pass";
                 //Create the query to the local database.
                 if (PreviusClass.conn != null) {
@@ -275,7 +282,7 @@ public class Server_Thread extends Thread {
                 }
                 if (helloImpl != null) {
                     try {
-                        helloImpl.updateRow(ibt, msg, datetime, pass);
+                        helloImpl.updateRow(dataSet[1], dataSet[3], datetime);
                         System.out.println("External query performed...[OK]");
                     } catch (Exception exx) {
 

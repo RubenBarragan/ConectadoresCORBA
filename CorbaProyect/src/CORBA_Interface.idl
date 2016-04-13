@@ -5,7 +5,7 @@ module commun
     string sayHello();
     string selectAll();
     string insertRow(in string ibt, in string name, in string lugar, in string datetime, in string password);
-    string updateRow(in string ibt, in string lugar, in string datetime, in string password);
+    string updateRow(in string ibt, in string lugar, in string datetime);
     boolean isEmpty();
     void recoveryBD(in string ibt, in string name, in string lugar, in string datetime, in string password);
     void giveMeYourBD();

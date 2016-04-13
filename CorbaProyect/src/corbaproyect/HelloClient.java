@@ -57,7 +57,7 @@ public class HelloClient extends Thread {
         Server_Socket s1 = new Server_Socket(4050, helloImpl, args);
         
         //Instance to connect with cliends.
-        Server_Socket s2 = new Server_Socket(4051, helloImpl, args);
+        //Server_Socket s2 = new Server_Socket(4051, helloImpl, args);
         
     }
 }

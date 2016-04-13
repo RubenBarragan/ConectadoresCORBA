@@ -44,7 +44,6 @@ public class Server_Socket {
             System.out.println("Server socket initializated... [OK]");
             cbd = new ConnectBD();
             conn = cbd.connectBD();
-            System.out.println("Local database connection established... [OK]");
 
             while (true) {
                 Socket theClient;

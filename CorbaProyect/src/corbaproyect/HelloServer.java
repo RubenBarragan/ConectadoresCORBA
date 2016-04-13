@@ -158,7 +158,7 @@ class HelloImpl extends CORBA_InterfacePOA {
         return returnedQuery;
     }
 
-    public String updateRow(String ibt, String lugar, String datetime, String pass) {
+    public String updateRow(String ibt, String lugar, String datetime) {
 
         String returnedQuery = "";
 
@@ -169,7 +169,7 @@ class HelloImpl extends CORBA_InterfacePOA {
             //stmt is the statement's object. It's used to create statements or queries.
             Statement stmt = con.createStatement();
 
-            stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + lugar + "',`datetime`='" + datetime + "',`password`='" + pass + "'  WHERE id_bluetooth='" + ibt + "'");
+            stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + lugar + "',`datetime`='" + datetime + "'  WHERE id_bluetooth='" + ibt + "'");
 
             System.out.println("All right");
 
@@ -184,7 +184,7 @@ class HelloImpl extends CORBA_InterfacePOA {
     public void recoveryBD(String ibt, String name, String lugar, String datetime, String pass) {
         int result = exists_idBT(ibt, datetime);
         if (result == 1) {
-            updateRow(ibt, lugar, datetime, pass);
+            updateRow(ibt, lugar, datetime);
         } else if (result == 0) {
             insertRow(ibt, name, lugar, datetime, pass);
         }

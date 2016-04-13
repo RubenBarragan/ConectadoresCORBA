@@ -20,9 +20,9 @@ public class CorbaProyect {
         String[] argsClient = {"-ORBInitialHost","10.0.5.215","-ORBInitialPort","1050"};
         
         //Create an instance of the Server.
-        HelloServer hs = new HelloServer(argsServer, argsClient);
+        //HelloServer hs = new HelloServer(argsServer, argsClient);
         
         //Create an instance of the client.
-        //HelloClient hc = new HelloClient(argsClient);
+        HelloClient hc = new HelloClient(argsClient);
     }
 }
