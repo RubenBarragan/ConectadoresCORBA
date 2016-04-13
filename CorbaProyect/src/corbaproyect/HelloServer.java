@@ -329,7 +329,7 @@ public class HelloServer extends Thread {
             NameComponent path[] = ncRef.to_name(name);
             ncRef.rebind(path, href);
 
-            //Test DB.
+            //Test DB and connect.
             helloImpl.testBDConnection();
 
             System.out.println("HelloServer ready and waiting ...");

@@ -15,7 +15,7 @@ import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
 import org.omg.CORBA.*;
 
-public class HelloClient extends Thread{
+public class HelloClient extends Thread {
 
     public String[] args = {};
     static CORBA_Interface helloImpl;
@@ -54,6 +54,10 @@ public class HelloClient extends Thread{
         }
         
         //Instance to connect with clients.
-        Server_Socket s = new Server_Socket(4050, helloImpl, args);
+        Server_Socket s1 = new Server_Socket(4050, helloImpl, args);
+        
+        //Instance to connect with cliends.
+        Server_Socket s2 = new Server_Socket(4051, helloImpl, args);
+        
     }
 }

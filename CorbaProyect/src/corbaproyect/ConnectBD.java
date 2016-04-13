@@ -17,12 +17,12 @@ public class ConnectBD {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/locator", "root", "");
-            System.out.println("se conecto a DB");
+            System.out.println("Local database connection established...[OK]");
             return con;
 
         } catch (ClassNotFoundException | SQLException e) {
             //System.out.println(e);
-            System.out.println("DBs connecting...[FAILED]");
+            System.out.println("Local database connecting...[FAILED]");
             
             return null;
         }

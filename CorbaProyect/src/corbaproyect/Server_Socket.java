@@ -37,14 +37,14 @@ public class Server_Socket {
 
     public Server_Socket(int puerto, CORBA_Interface _helloImpl, String[] args) {
         this.helloImpl = _helloImpl;
+        
         try {
-            
-            System.out.println("Starting up the server socket...");
+            System.out.println("Starting up the server socket...[OK]");
             theServer = new ServerSocket(puerto);
             System.out.println("Server socket initializated... [OK]");
             cbd = new ConnectBD();
             conn = cbd.connectBD();
-            System.out.println("Database's connection established... [OK]");
+            System.out.println("Local database connection established... [OK]");
 
             while (true) {
                 Socket theClient;
@@ -54,7 +54,7 @@ public class Server_Socket {
                 ((Server_Thread) new Server_Thread(theClient, helloImpl, conn, serverIP, this, args)).start();
             }
         } catch (IOException ex) {
-            System.out.println("algo pasa");
+            System.out.println("Something is wrong.");
             Logger.getLogger(Server_Socket.class.getName()).log(Level.ALL, null, ex);
         }
     }
