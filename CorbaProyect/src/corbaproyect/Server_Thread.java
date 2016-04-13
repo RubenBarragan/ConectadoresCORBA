@@ -19,6 +19,9 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
@@ -33,16 +36,12 @@ public class Server_Thread extends Thread {
     private DataOutputStream toClient;
     private DataInputStream fromClient;
     private CORBA_Interface helloImpl;
-    private Connection conn;
-    private String serverIP;
     private Server_Socket PreviusClass;
     private String[] args;
 
     public Server_Thread(Socket _theClient, CORBA_Interface _helloImpl, Connection _conn, String _address, Server_Socket a, String[] _args) {
         this.theClient = _theClient;
         this.helloImpl = _helloImpl;
-        this.conn = _conn;
-        this.serverIP = _address;
         this.PreviusClass = a;
         this.args = _args;
 
@@ -218,46 +217,55 @@ public class Server_Thread extends Thread {
         return trueID;
     }
 
+    public String getDate() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        //System.out.println(sdf.format(cal.getTime()));
+        return sdf.format(cal.getTime());
+    }
+
     @Override
     public void run() {
         String msg = "";
 
         try {
-
             //Receive msg from the client
             msg = fromClient.readUTF();
 
-            String[] argsw = msg.split("#");
+            String[] dataSet = msg.split("#"); //ingresar#id_bluetooth#nombre#password
 
-            if (argsw[0].equals("ingresar")) {
-                if (checkID(argsw[1], argsw[2], argsw[3])) {
-                    toClient.writeUTF("Ingresa");
+            if (dataSet[0].equals("ingresar")) {
+                //Check if the user and password match.
+                if (checkID(dataSet[1], dataSet[2], dataSet[3])) {
+                    toClient.writeUTF("ingresa");
                 } else {
                     toClient.writeUTF("noIngresa");
                 }
-            } else if (argsw[0].equals("registrar")) {
-                if (!checkIDexist(argsw[1], argsw[2], argsw[3])) {
-                    insertPerson(argsw[1], argsw[2], argsw[3]);
-                    toClient.writeUTF("Registrado");
+            } else if (dataSet[0].equals("registrar")) {
+                //Check if the person already exists.
+                if (!checkIDexist(dataSet[1], dataSet[2], dataSet[3])) {
+                    insertPerson(dataSet[1], dataSet[2], dataSet[3]);
+                    toClient.writeUTF("registrado");
                 } else {
                     toClient.writeUTF("yaExiste");
                 }
-            } else if (argsw[0].equals("buscarPersona")) {
-                String persona = buscarPersona(argsw[2]);
+            } else if (dataSet[0].equals("searchPerson")) {
+                String persona = buscarPersona(dataSet[2]);
                 toClient.writeUTF(persona);
-            } else if (argsw[0].equals("buscarTodos")) {
+            } else if (dataSet[0].equals("searchAll")) {
                 String Todos = buscarTodos();
                 toClient.writeUTF(Todos);
-            } else {
-
+            } else if (dataSet[0].equals("searchArea")) {
+                //Search by area.
+            } else if (dataSet[0].equals("updateLocation")) {
                 System.out.println("Message Recived: " + msg);
-                String datetime = "2016-04-01 23:55:20";
+                String datetime = getDate();
                 String ibt = "bt123456789";
                 String pass = "pass";
                 //Create the query to the local database.
                 if (PreviusClass.conn != null) {
                     Statement stmt = PreviusClass.conn.createStatement(); //stmt is the object to create statements.
-                    stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + msg + "',`datetime`='" + datetime + "' WHERE id_bluetooth='" + ibt + "'");
+                    stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + dataSet[3] + "',`datetime`='" + datetime + "' WHERE id_bluetooth='" + dataSet[1] + "'");
                     System.out.println("Local query performed...[OK].");
                     toClient.writeUTF("Acknowledge");
                 } else {
@@ -265,7 +273,6 @@ public class Server_Thread extends Thread {
                     PreviusClass.conn = conni;
                     toClient.writeUTF("noDB");
                 }
-
                 if (helloImpl != null) {
                     try {
                         helloImpl.updateRow(ibt, msg, datetime, pass);
@@ -284,9 +291,8 @@ public class Server_Thread extends Thread {
         } catch (IOException ex) {
             //Logger.getLogger(Server_Thread.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("External query performed...[FAILED]");
-
             try {
-                helloImpl.sayHello(); // Function to test RMI connection.
+                helloImpl.sayHello(); // Function to test CORBA connection.
             } catch (Exception ex1) {
                 PreviusClass.sendBD = false;
                 connectToServer(args);
@@ -302,7 +308,7 @@ public class Server_Thread extends Thread {
                 PreviusClass.conn = conn;
 
             } catch (IOException ex1) {
-                System.out.println("No contestavion al cliente ");
+                System.out.println("No contestación al cliente");
                 Logger.getLogger(Server_Thread.class.getName()).log(Level.SEVERE, null, ex1);
             }
             Logger.getLogger(Server_Thread.class.getName()).log(Level.SEVERE, null, ex);
