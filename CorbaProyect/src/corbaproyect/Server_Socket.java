@@ -22,11 +22,12 @@ import java.sql.*;
  *
  * @author Pedro
  */
-public class Server_Socket {
+public class Server_Socket extends Thread {
 
     ServerSocket theServer;
     String serverIP = "10.0.5.215";
     int counter = 0;
+    int port;
     private DataOutputStream toClient;
     private DataInputStream fromClient;
     boolean RMIconnected = false;
@@ -34,14 +35,22 @@ public class Server_Socket {
     public CORBA_Interface helloImpl;
     ConnectBD cbd;
     Connection conn;
+    String[] args;
 
     public Server_Socket(int puerto, CORBA_Interface _helloImpl, String[] args) {
         this.helloImpl = _helloImpl;
-        
+        this.port = puerto;
+        this.args = args;
+
+        this.start();
+    }
+
+    @Override
+    public void run() {
         try {
-            System.out.println("Starting up the server socket...[OK]");
-            theServer = new ServerSocket(puerto);
-            System.out.println("Server socket initializated... [OK]");
+            System.out.println("Starting up the server socket in port " + port + "...[OK]");
+            theServer = new ServerSocket(port);
+            System.out.println("Server socket initializated in port "+port+"... [OK]");
             cbd = new ConnectBD();
             conn = cbd.connectBD();
 
@@ -57,5 +66,4 @@ public class Server_Socket {
             Logger.getLogger(Server_Socket.class.getName()).log(Level.ALL, null, ex);
         }
     }
-
 }

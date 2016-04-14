@@ -183,9 +183,10 @@ public class Server_Thread extends Thread {
             ResultSet rs = stmt.executeQuery("select * from devices");
             int i = 0;
             while (rs.next()) {
-                datosPersonas = datosPersonas + rs.getString(3) + "#" + rs.getString(4) + "#" + rs.getString(5);
+                datosPersonas += rs.getString(3) + "#" + rs.getString(4) + "#" + rs.getString(5) + "#";
                 i++;
             }
+            datosPersonas = deleteLastChar(datosPersonas);
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(Server_Thread.class.getName()).log(Level.SEVERE, null, ex);
@@ -224,9 +225,35 @@ public class Server_Thread extends Thread {
         return sdf.format(cal.getTime());
     }
     
-    public String searchArea(String area){
-        
-        return "";
+    public String deleteLastChar(String s){
+        if(!s.isEmpty()){
+            return s.substring(0, s.length() - 1);
+        } else {
+            return s;
+        }
+    }
+
+    public String searchArea(String area) {
+        String data = "";
+        ConnectBD cbd = new ConnectBD();
+        try {
+            Connection con = cbd.connectBD();
+            //stmt is the statement's object. It's used to create statements or queries.
+            Statement stmt = con.createStatement();
+
+            //devices is the table's name.
+            ResultSet rs = stmt.executeQuery("select * from devices where lugar = '" + area + "'");
+
+            while (rs.next()) {
+                data += rs.getString(2) + "#" + rs.getString(3) + "#" + rs.getString(4) + "#" + rs.getString(5) + "#";
+            }
+            data = deleteLastChar(data);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Server_Thread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return data; //id_bluetooth#name#lugar#date#id_bluetooth#name#lugar#date...
     }
 
     @Override
@@ -256,23 +283,22 @@ public class Server_Thread extends Thread {
                 }
             } else if (dataSet[0].equals("searchPerson")) {  //searchPerson#name
                 String persona = buscarPersona(dataSet[1]);
-                toClient.writeUTF(persona);
+                toClient.writeUTF(persona); //notFound if user doesn't exist and id_bluetooth#name#lugar#date
             } else if (dataSet[0].equals("searchAll")) { //searchAll
                 String Todos = buscarTodos();
-                toClient.writeUTF(Todos);
+                toClient.writeUTF(Todos); //id_bluetooth#name#lugar#date#id_bluetooth#name#lugar#date...
             } else if (dataSet[0].equals("searchArea")) { //searchArea#location
                 String userInArea = searchArea(dataSet[1]);
-                toClient.writeUTF(userInArea);
-            } else if (dataSet[0].equals("updateLocation")) { //updateLocation#id_bluetooth#location#password
+                toClient.writeUTF(userInArea); //id_bluetooth#name#lugar#date#id_bluetooth#name#lugar#date...
+            } else if (dataSet[0].equals("updateLocation")) { //updateLocation#id_bluetooth#location
                 //System.out.println("Message Recived: " + msg);
                 String ibt = dataSet[1];
                 String lugar = dataSet[2];
                 String datetime = getDate();
-                String pass = "pass";
                 //Create the query to the local database.
                 if (PreviusClass.conn != null) {
                     Statement stmt = PreviusClass.conn.createStatement(); //stmt is the object to create statements.
-                    stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + dataSet[3] + "',`datetime`='" + datetime + "' WHERE id_bluetooth='" + dataSet[1] + "'");
+                    stmt.executeUpdate("UPDATE `devices` SET `lugar`='" + lugar + "',`datetime`='" + datetime + "' WHERE id_bluetooth='" + ibt + "'");
                     System.out.println("Local query performed...[OK].");
                     toClient.writeUTF("Acknowledge");
                 } else {
@@ -282,7 +308,7 @@ public class Server_Thread extends Thread {
                 }
                 if (helloImpl != null) {
                     try {
-                        helloImpl.updateRow(dataSet[1], dataSet[3], datetime);
+                        helloImpl.updateRow(ibt, lugar, datetime);
                         System.out.println("External query performed...[OK]");
                     } catch (Exception exx) {
 
