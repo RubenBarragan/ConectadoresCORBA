@@ -158,6 +158,7 @@ class HelloImpl extends CORBA_InterfacePOA {
         return returnedQuery;
     }
 
+    @Override
     public String updateRow(String ibt, String lugar, String datetime) {
 
         String returnedQuery = "";

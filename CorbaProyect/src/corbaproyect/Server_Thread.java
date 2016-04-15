@@ -311,7 +311,6 @@ public class Server_Thread extends Thread {
                         helloImpl.updateRow(ibt, lugar, datetime);
                         System.out.println("External query performed...[OK]");
                     } catch (Exception exx) {
-
                         PreviusClass.sendBD = false;
                         connectToServer(args);
                     }
