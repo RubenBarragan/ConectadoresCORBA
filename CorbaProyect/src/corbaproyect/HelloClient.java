@@ -47,6 +47,7 @@ public class HelloClient extends Thread {
 
             //System.out.println("Obtained a handle on server object: " + helloImpl);
             System.out.println(helloImpl.sayHello());
+            helloImpl.giveMeYourBD();
 
         } catch (Exception e) {
             System.out.println("CORBA Server connecting...[FAILED]");
