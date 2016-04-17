@@ -224,9 +224,9 @@ public class Server_Thread extends Thread {
         //System.out.println(sdf.format(cal.getTime()));
         return sdf.format(cal.getTime());
     }
-    
-    public String deleteLastChar(String s){
-        if(!s.isEmpty()){
+
+    public String deleteLastChar(String s) {
+        if (!s.isEmpty()) {
             return s.substring(0, s.length() - 1);
         } else {
             return s;
@@ -277,6 +277,7 @@ public class Server_Thread extends Thread {
                 //Check if the person already exists.
                 if (!checkIDexist(dataSet[1], dataSet[2], dataSet[3])) {
                     insertPerson(dataSet[1], dataSet[2], dataSet[3]);
+                    helloImpl.insertRow(dataSet[1], dataSet[2], "", "2010-04-13 06:50:44", dataSet[3]);
                     toClient.writeUTF("signUp");
                 } else {
                     toClient.writeUTF("userExists");
